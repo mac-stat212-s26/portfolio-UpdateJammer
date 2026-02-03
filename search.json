@@ -43,6 +43,28 @@
     ]
   },
   {
+    "objectID": "tt/hw01-tt.html",
+    "href": "tt/hw01-tt.html",
+    "title": "Homework 01",
+    "section": "",
+    "text": "TidyTuesday Section\nExplore the week’s TidyTuesday challenge. Develop a research question, then answer it through a short data story with effective visualization(s). Provide sufficient background for readers to grasp your narrative.\nCode# Importing TidyTuesday data (code taken directly from the 'Brazilian Companies' github).\ncompanies &lt;- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2026/2026-01-27/companies.csv')\nlegal_nature &lt;- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2026/2026-01-27/legal_nature.csv')\nqualifications &lt;- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2026/2026-01-27/qualifications.csv')\nsize &lt;- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2026/2026-01-27/size.csv')\n\n# Loading 'tidyverse' package.\nlibrary(tidyverse)\nCode# Observing the largest Brazilian State-Owned Enterprises in terms of their capital shares.\ncompanies |&gt;\n  filter(legal_nature == \"State-Owned Enterprise\") |&gt;\n  select(company_name, capital_stock) |&gt;\n  arrange(desc(capital_stock)) |&gt;\n  head()\n\n# A tibble: 6 × 2\n  company_name                                                     capital_stock\n  &lt;chr&gt;                                                                    &lt;dbl&gt;\n1 COMPANHIA DOCAS DO RIO DE JANEIRO                                  2445536906.\n2 AUTORIDADE PORTUARIA DE SANTOS S.A.                                1390448452.\n3 GRUPO HOSPITALAR CONCEICAO S. A.                                    336784734.\n4 INSTITUTO DE PESQUISAS TECNOLOGICAS  DO ESTADO DE S.PAULO S/A I…    320039401.\n5 NAV BRASIL SERVICOS DE NAVEGACAO AEREA S.A. - NAV BRASIL            300141348.\n6 INSTITUTO DE TECNOLOGIA DO PARANA                                   252554799.\nCode# Visualization\n\n# Bearing in mind the two notable outliers.\nlargestSOE &lt;- companies |&gt;\n  mutate(capital_stock = capital_stock / 1000000) |&gt;\n  filter(legal_nature == \"State-Owned Enterprise\") |&gt;\n  arrange(desc(capital_stock)) |&gt;\n  head(2)\n\n# Boxplots displaying SOEs and their capital stocks.\ncompanies |&gt;\n  mutate(capital_stock = capital_stock / 1000000) |&gt;\n  filter(legal_nature == \"State-Owned Enterprise\") |&gt;\n  ggplot(aes(x = capital_stock, y = owner_qualification, fill = owner_qualification, label = company_name)) +\n  geom_boxplot(alpha = 0.8, show.legend = FALSE) + # Legend hidden to prevent redundancy\n  geom_text(\n    data = largestSOE, \n    size = 2.5,\n    nudge_y = 0.1,\n    hjust = \"inward\"\n    ) + \n  labs(x = \"Capital Stocks (in Million of BRL)\", y = \"Owner Qualifications\", \n       title = \"Declared Capital Shares Across Brazilian State-Owned Enterprises\") +\n  scale_fill_viridis_d() +\n  theme_classic()\n\n\n\nIsauro Reyes, 02-02-2026, TidyTuesday(‘2026-01-27’)",
+    "crumbs": [
+      "TidyTuesday",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Homework 01</span>"
+    ]
+  },
+  {
+    "objectID": "tt/hw01-tt.html#tidytuesday-section",
+    "href": "tt/hw01-tt.html#tidytuesday-section",
+    "title": "Homework 01",
+    "section": "",
+    "text": "Research Questions: How do government-appointed positions in Brazilian State-Owned Enterprises affect the companies Capital Shares?\n\n\n\n\nData Story: State-Owned Enterprises are companies that are either partially or fully controlled by local or national governments. Like privately-owned corporations, SOEs engage in commercial sectors. However, what separates SOEs is that often times high-level corporate titles are appointed by the government, primarily to government officials, to ensure proper ownership. This raises a significant question: How is a company’s performance affected by government-picked leaders? Additionally, do different positions in the corporate hierarchy alters the magnitude of a company’s performance? To observe this, I will be using Brazilian SOEs recorded by the Brazilian Ministry of Finance, and measuring performance on the number of capital stocks an enterprise has (both of which wrangled by Marcelo Silva on ‘TidyTuesday’). Looking at the above visualization, Presidents/Chairs and Directors/Officers have both the widest interquartile ranges, and the highest medians of the 4 ownership rankings. This can mean one of two things. One, that the government should appoint officials to higher levels of the corporate ladder to ensure higher median capital shares. And two, that SOEs with hand-picked leaders can cause more variability in terms of their stocks, depending on the leader’s influence. To further look at this notion, Presidents/Chairs observe two outliers among Santos’ porting and Rio de Janeiro’s docking SOEs. Nonetheless, despite concerns of variability, the interquartile ranges of both qualification levels far exceeds that of Administrators/Managers. Liauidators on the other hand has its sprread located inside the President/Chair’s, and below the Director/Officer’s.",
+    "crumbs": [
+      "TidyTuesday",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Homework 01</span>"
+    ]
+  },
+  {
     "objectID": "pcl/pcl.html",
     "href": "pcl/pcl.html",
     "title": "Pre-Class Learning Summaries",
@@ -50,7 +72,7 @@
     "text": "R",
     "crumbs": [
       "Pre-Class Learnings",
-      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Pre-Class Learning Summaries</span>"
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Pre-Class Learning Summaries</span>"
     ]
   },
   {
@@ -61,7 +83,7 @@
     "text": "Quarto\n\n\n\nfrom qmd4sci.njtierney.com",
     "crumbs": [
       "Pre-Class Learnings",
-      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Pre-Class Learning Summaries</span>"
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Pre-Class Learning Summaries</span>"
     ]
   },
   {
@@ -72,7 +94,7 @@
     "text": "Add content here",
     "crumbs": [
       "In-Class Activities",
-      "<span class='chapter-number'>6</span>  <span class='chapter-title'>ICA Sample 1</span>"
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>ICA Sample 1</span>"
     ]
   },
   {
@@ -83,7 +105,7 @@
     "text": "Add content here",
     "crumbs": [
       "In-Class Activities",
-      "<span class='chapter-number'>7</span>  <span class='chapter-title'>ICA Sample 2</span>"
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>ICA Sample 2</span>"
     ]
   },
   {
@@ -94,7 +116,7 @@
     "text": "Add content here",
     "crumbs": [
       "Extras",
-      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Extra Sample 1</span>"
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Extra Sample 1</span>"
     ]
   },
   {
@@ -105,7 +127,7 @@
     "text": "Add content here",
     "crumbs": [
       "Extras",
-      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Extra Sample 2</span>"
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>Extra Sample 2</span>"
     ]
   }
 ]
