@@ -1,0 +1,63 @@
+---
+title: "Homework 01"
+---
+
+
+## TidyTuesday Section
+
+Explore the week's [TidyTuesday](https://github.com/rfordatascience/tidytuesday) challenge. Develop a research question, then answer it through a short data story with [effective visualization(s)]({{< var effective-viz-url >}}).  Provide sufficient background for readers to grasp your narrative.
+
+```{r, message = F}
+# Importing TidyTuesday data (code taken directly from the 'Brazilian Companies' github).
+companies <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2026/2026-01-27/companies.csv')
+legal_nature <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2026/2026-01-27/legal_nature.csv')
+qualifications <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2026/2026-01-27/qualifications.csv')
+size <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2026/2026-01-27/size.csv')
+
+# Loading 'tidyverse' package.
+library(tidyverse)
+```
+
+> **Research Questions:** How do government-appointed positions in Brazilian State-Owned Enterprises affect the companies Capital Shares?
+
+```{r}
+# Observing the largest Brazilian State-Owned Enterprises in terms of their capital shares.
+companies |>
+  filter(legal_nature == "State-Owned Enterprise") |>
+  select(company_name, capital_stock) |>
+  arrange(desc(capital_stock)) |>
+  head()
+```
+
+```{r, warning = F, fig.alt = "Four boxplots denoting the different qualification levels of the enterprise's owner. Liquidators and Administrators/Managers have small ranges below 500 million BRL in capital stocks. Directors/Officers and Presidents/Chairs have wider boxes below the aforementioned shares cap and relatively equal medians, however, the latter of which has a larger interquartile range than the former. Furthermore, two notable outliers are shown on the President/Chair plot, having near 1,500 and 2,500 million BRL in shares.", fig.cap = "Isauro Reyes, 02-02-2026, TidyTuesday('2026-01-27')"}
+# Visualization
+
+# Bearing in mind the two notable outliers.
+largestSOE <- companies |>
+  mutate(capital_stock = capital_stock / 1000000) |>
+  filter(legal_nature == "State-Owned Enterprise") |>
+  arrange(desc(capital_stock)) |>
+  head(2)
+
+# Boxplots displaying SOEs and their capital stocks.
+companies |>
+  mutate(capital_stock = capital_stock / 1000000) |>
+  filter(legal_nature == "State-Owned Enterprise") |>
+  ggplot(aes(x = capital_stock, y = owner_qualification, fill = owner_qualification, label = company_name)) +
+  geom_boxplot(alpha = 0.8, show.legend = FALSE) + # Legend hidden to prevent redundancy
+  geom_text(
+    data = largestSOE, 
+    size = 2.5,
+    nudge_y = 0.1,
+    hjust = "inward"
+    ) + 
+  labs(x = "Capital Stocks (in Million of BRL)", y = "Owner Qualifications", 
+       title = "Declared Capital Shares Across Brazilian State-Owned Enterprises") +
+  scale_fill_viridis_d() +
+  theme_classic()
+```
+
+> **Data Story:** 
+  State-Owned Enterprises are companies that are either partially or fully controlled by local or national governments. Like privately-owned corporations, SOEs engage in commercial sectors. However, what separates SOEs is that often times high-level corporate titles are appointed by the government, primarily to government officials, to ensure proper ownership. 
+  This raises a significant question: How is a company's performance affected by government-picked leaders? Additionally, do different positions in the corporate hierarchy alters the magnitude of a company's performance? To observe this, I will be using Brazilian SOEs recorded by the Brazilian Ministry of Finance, and measuring performance on the number of capital stocks an enterprise has (both of which wrangled by Marcelo Silva on 'TidyTuesday').
+  Looking at the above visualization, Presidents/Chairs and Directors/Officers have both the widest interquartile ranges, and the highest medians of the 4 ownership rankings. This can mean one of two things. One, that the government should appoint officials to higher levels of the corporate ladder to ensure higher median capital shares. And two, that SOEs with hand-picked leaders can cause more variability in terms of their stocks, depending on the leader's influence. To further look at this notion, Presidents/Chairs observe two outliers among Santos' porting and Rio de Janeiro's docking SOEs. Nonetheless, despite concerns of variability, the interquartile ranges of both qualification levels far exceeds that of Administrators/Managers. Liauidators on the other hand has its sprread located inside the President/Chair's, and below the Director/Officer's.
