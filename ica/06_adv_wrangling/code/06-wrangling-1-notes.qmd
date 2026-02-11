@@ -244,9 +244,17 @@ diamonds |>
   count(cut %in% c("Fair", "Premium", "Ideal"))
 
 #4
+diamonds
+
 diamonds |>
   filter(cut == "Fair") |>
-  any(price > 3000)
+  filter(price > 3000) |>
+  count()
+
+diamonds |>
+  filter(cut == "Ideal") |>
+  filter(price > 2000) |>
+  count()
 
 #5
 diamonds |>
