@@ -273,7 +273,23 @@ We want to see how `Month`, `Wind`, and `Temp` relate to the chance of missingne
 Does it look like a linear regression model (perhaps with variable transformations) could be effective in imputing the missing ozone data?
 
 ```{r}
+ggplot(airquality, aes(x = Month, y = Ozone)) +
+    geom_point() +
+    geom_smooth() +
+    geom_vline(data = airquality |> filter(is.na(Ozone)), mapping = aes(xintercept = Month)) +
+    labs(title = "Ozone Missingness: Month")  
 
+ggplot(airquality, aes(x = Wind, y = Ozone)) +
+    geom_point() +
+    geom_smooth() +
+    geom_vline(data = airquality |> filter(is.na(Ozone)), mapping = aes(xintercept = Wind)) +
+    labs(title = "Ozone Missingness: Wind")  
+
+ggplot(airquality, aes(x = Temp, y = Ozone)) +
+    geom_point() +
+    geom_smooth() +
+    geom_vline(data = airquality |> filter(is.na(Ozone)), mapping = aes(xintercept = Temp)) +
+    labs(title = "Ozone Missingness: Temp") 
 ```
 
 
@@ -312,7 +328,6 @@ We can use a **simulation study** to investigate the statistical properties desc
 We will slowly step through the simulation study code below. We will pause frequently for you to add comments documenting what is happening. 
 
 ```{r mult_single_sim_study}
-set.seed(224)
 num_simulations <- 1000
 ci_list <- vector("list", length = num_simulations)
 
