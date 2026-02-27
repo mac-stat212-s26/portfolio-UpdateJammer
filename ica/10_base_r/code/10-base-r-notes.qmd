@@ -113,9 +113,9 @@ dim(m) # Get the dimensions of the matrix
 - [Tibbles do less and complain more than base data.frames](https://tibble.tidyverse.org/reference/tbl_df-class.html)
 
 ```{r}
-mod_df <- tibble(x = 1:10, y = 1:10 + rnorm(10))
+mod_df <- dplyr::tibble(x = 1:10, y = 1:10 + rnorm(10))
 
-df <- tibble(a = 1:3, b = c("constant", "x", "x squared"), d = list(lm(y ~ 1, data = mod_df), lm(y ~ x, data = mod_df), lm(y ~ x + I(x^2), data = mod_df)))
+df <- dplyr::tibble(a = 1:3, b = c("constant", "x", "x squared"), d = list(lm(y ~ 1, data = mod_df), lm(y ~ x, data = mod_df), lm(y ~ x + I(x^2), data = mod_df)))
 df
 
 length(df) # number of "elements" in a data frame is the number of "columns"
@@ -203,15 +203,15 @@ Unlike `filter()`, `NA` indices will be included in the output as `NA`s unless y
 
 ```{r}    
 # Compare with filter 
-filter(tibble(x = x), x > 5)
+dplyr::filter(dplyr::tibble(x = x), x > 5)
 ```
 
 
 ```{r}
 # List
 y[c(TRUE, FALSE, TRUE)]
-y[y |> map_lgl(~ is.numeric(.x))] # example of a map function!
-y[y |> map_lgl(~ is.character(.x))]
+y[y |> purrr::map_lgl(~ is.numeric(.x))] # example of a map function!
+y[y |> purrr::map_lgl(~ is.character(.x))]
 ```
 
 
@@ -300,8 +300,8 @@ m[c(TRUE, FALSE, FALSE),] # Get the 1st row via a logical
 
 
 # Add row and column names to the matrix
-colnames(m) <- str_c("col", 1:4)
-rownames(m) <- str_c("row", 1:3)
+colnames(m) <- stringr::str_c("col", 1:4)
+rownames(m) <- stringr::str_c("row", 1:3)
 m["row1",]
 
 ```
@@ -314,7 +314,7 @@ We can use `$` and `[[` to extract a single column of a data frame or an element
 mtcars
 mtcars$mpg
 mtcars[["mpg"]]
-mtcars |> pull(mpg)
+mtcars |> dplyr::pull(mpg)
 ```
 
 ## Exercises 
@@ -366,10 +366,10 @@ pred_of_interest <- "hp"
 When you're done developing your function, remove these objects to declutter your environment by entering `rm(data, yvar, preds, pred_of_interest)` in the Console.
 
 ```{r eval=FALSE}
-fit_mod_and_extract <- function(___) {
+fit_mod_and_extract <- function(data, yvar, preds, pred_of_interest) {
     # Use str_c to create a string (formula_str) that looks like "yvar ~ pred1 + pred2"
     # Look at the documentation for a helpful argument
-    mod_formula_str <- 
+    mod_formula_str <- stringr::str_c(yvar, preds)
     mod_form <- as.formula(mod_formula_str)
     
     # Fit a linear model using the constructed formula and given data
@@ -381,15 +381,15 @@ fit_mod_and_extract <- function(___) {
     # Return the coefficient estimate and CI for the predictor of interest
     tibble(
         which_pred = pred_of_interest,
-        estimate = ___,
-        ci_lower = ___,
-        ci_upper = ___
+        estimate = mod,
+        ci_lower = ci,
+        ci_upper = ci
     )
 }
 ```
 
 ```{r}
-
+fit_mod_and_extract(data, yvar, preds, pred_of_interest)
 
 
 
