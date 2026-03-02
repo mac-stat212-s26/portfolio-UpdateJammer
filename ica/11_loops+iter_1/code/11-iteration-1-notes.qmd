@@ -112,7 +112,7 @@ for (i in seq_along(no_groups)) {
 `seq_len()` is useful for iterating over the rows of a data frame because `seq_along()` would iterate over columns:
 
 ```{r seq_len_df}
-small_data <- tibble(a = 1:2, b = 2:3, c = 4:5)
+small_data <- dplyr::tibble(a = 1:2, b = 2:3, c = 4:5)
 
 for (col in small_data) { # each element is the column 
     print(col)
@@ -140,7 +140,7 @@ num_storage
 list_storage
 
 for (i in seq_len(3)) {
-    char_storage[i] <- str_c("Number: ", i)
+    char_storage[i] <- stringr::str_c("Number: ", i)
     num_storage[i] <- 2*i
     list_storage[[i]] <- i # Note the [[ for subsetting here
 }
