@@ -9,6 +9,10 @@ By the end of this lesson, you should be able to:
 - Use the `map()` family of functions in the `purrr` package to handle repeated tasks that create output, instead of `for` loops 
 - Use the `walk()` family of functions in the `purrr` package to handle repeated tasks that need side-effects, instead of `for` loops 
 
+```{r}
+library(purrr)
+```
+
 
 
 ## Iteration review 
