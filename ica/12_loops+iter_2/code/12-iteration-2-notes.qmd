@@ -86,9 +86,9 @@ results4 <- bench::mark(seq(1,1e5))
 
 ```{r}
 # Compile Results
-bind_rows(results1, results2, results3, results4) |>
-  mutate(type = c("for_loop_no_storage", "for_loop_with_storage", "purrr_map", "standard_func")) |>
-  select(type, mem_alloc, total_time)  |> print()
+dplyr::bind_rows(results1, results2, results3, results4) |>
+  dplyr::mutate(type = c("for_loop_no_storage", "for_loop_with_storage", "purrr_map", "standard_func")) |>
+  dplyr::select(type, mem_alloc, total_time)  |> print()
 
 ```
 
@@ -122,7 +122,7 @@ map_chr(mtcars, class)
 Let's get the class of each variable in `diamonds`:
 
 ```{r purrr_col_classes_error, error=TRUE}
-map_chr(diamonds, class)
+map_chr(ggplot2::diamonds, class)
 ```
 
 What happened!? 
@@ -133,13 +133,13 @@ What happened!?
 Let's figure out what happened:
 
 ```{r class_diamonds_cut}
-class(diamonds$cut)
+class(ggplot2::diamonds$cut)
 ```
 
 Ah! `cut` has 2 classes. In this case, `map()` (which returns a list) is the best option because some variables have multiple classes:
 
 ```{r purrr_col_classes_no_error}
-map(diamonds, class)
+map(ggplot2::diamonds, class)
 ```
 
 The error we encountered with `map_chr()` is a nice feature of `purrr` because it allows us to be very sure of the type of output we are getting.
@@ -154,10 +154,10 @@ We can also combine `map_*()` functions with tidy selection for some powerful va
 
 ```{r purrr_examples_by_col}
 # Mean of each numeric variable
-map_dbl(diamonds |> select(where(is.numeric)), mean)
+map_dbl(ggplot2::diamonds |> dplyr::select(where(is.numeric)), mean)
 
 # Number of unique values in each non-numeric variable
-map_int(diamonds |> select(!where(is.numeric)), n_distinct)
+map_int(ggplot2::diamonds |> dplyr::select(!where(is.numeric)), dplyr::n_distinct)
 ```
 
 
@@ -190,7 +190,7 @@ Let's look at the [`purrr` cheatsheet](https://rstudio.github.io/cheatsheets/pur
 Let's look at this code to randomly simulate data from Normal distributions.
 
 ```{r pmap_ex1}
-args <- tibble(
+args <- dplyr::tibble(
   n = c(100, 100, 100, 100), # this is n
   mean = c(0, 1, 2, 3),            # this is mean
   sd = c(4, 3, 2, 1)            # this is sd
@@ -198,7 +198,7 @@ args <- tibble(
 
 # save randomly generated data in tibble with simulation parameters
 sim_data <- args |>
-  mutate(rand_data = pmap(args, rnorm))
+  dplyr::mutate(rand_data = pmap(args, rnorm))
 
 sim_data
 ```
@@ -212,19 +212,19 @@ To access the information in that `rand_data` list, we need to `unnest()` this l
 
 ```{r}
 unnested_sim <- sim_data |> 
-  unnest(rand_data) # convert the rand_data list to numeric vector
+  tidyr::unnest(rand_data) # convert the rand_data list to numeric vector
   
   
 unnested_sim |> 
-  ggplot(aes(x = rand_data, group = mean, fill = factor(mean))) +
-  geom_density(alpha = .5)
+  ggplot2::ggplot(ggplot2::aes(x = rand_data, group = mean, fill = factor(mean))) +
+  ggplot2::geom_density(alpha = .5)
 ```
 
 
 We can also use `pmap()` to specify variations in some arguments but leave some arguments constant across the iterations:
 
 ```{r pmap_ex2}
-string_data <- tibble(
+string_data <- tidyr::tibble(
     pattern = c("p", "n", "h"),
     replacement = c("P", "N", "H")
 )
@@ -253,10 +253,10 @@ Repeat this exercise using `pmap()`.
 - Then, try to put it all together using `pmap()`.
 
 ```{r}
-xs <- diamonds |> select(carat, cut, clarity, color) |> names()
+xs <- ggplot2::diamonds |> dplyr::select(carat, cut, clarity, color) |> names()
 
 
-df_arg_combos <- crossing(
+df_arg_combos <- tidyr::crossing(
     mod_formula = str_c("price ~ ", map_chr(seq_along(xs), ~ str_c(xs[1:.x], collapse = " + ")) ),
     remove_outliers = c(TRUE, FALSE)
 )
@@ -300,8 +300,8 @@ First, let's create separate datasets that are still contained in one tibble.
 
 ```{r}
 # Let's create separate datasets within one tibble
-by_clarity <- diamonds |> 
-  group_nest(clarity)
+by_clarity <- ggplot2::diamonds |> 
+  dplyr::group_nest(clarity)
 
 by_clarity
 ```
@@ -309,7 +309,7 @@ by_clarity
 ```{r}
 # Create a variable with a image path
 by_clarity <- by_clarity |> 
-  mutate(path = str_glue("diamonds-{clarity}.png"))
+  dplyr::mutate(path = str_glue("diamonds-{clarity}.png"))
 
 by_clarity
 ```
@@ -317,12 +317,12 @@ by_clarity
 ```{r}
 # plot for making a scatterplot
 carat_scatter <- function(df) {
-  ggplot(df, aes(x = carat, y = price)) + geom_point()  
+  ggplot2::ggplot(df, ggplot2::aes(x = carat, y = price)) + ggplot2::geom_point()  
 }
 
 # Create a "variable" with each plots
 by_clarity <- by_clarity |> 
-  mutate(plot = map(data, carat_scatter)) # iterate over data to create ggplot output
+  dplyr::mutate(plot = map(data, carat_scatter)) # iterate over data to create ggplot output
 ```
 
 ```{r}
@@ -330,7 +330,7 @@ by_clarity <- by_clarity |>
 walk2( 
   by_clarity$path,
   by_clarity$plot,
-  function(path, plot){ ggsave(path, plot, width = 6, height = 6)}
+  function(path, plot){ ggplot2::ggsave(path, plot, width = 6, height = 6)}
 )
 
 ```
