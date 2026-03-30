@@ -165,6 +165,11 @@ Notes:
 - If the website has `Crawl-delay: x` in its `robots.txt`, include `Sys.sleep(x)` in your function to respect that.
 - Recall that `bind_rows()` from `dplyr` and `list_rbind()` from `purrr` takes a list of data frames and stacks them on top of each other.
 
+```{r}
+# Exercise 1
+
+```
+
 
 ## Example 2: NIH STEM Teaching Resources
 
@@ -182,4 +187,9 @@ We can infer from this that `.resource-title` would be the CSS selector for the 
 ## Done!
 
 - Check the ICA Instructions for how to (a) push your code to GitHub and (b) update your portfolio website
+
+```{r}
+# Exercise 2
+
+```
 
