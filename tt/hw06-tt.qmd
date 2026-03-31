@@ -1,0 +1,54 @@
+---
+title: "Homework 06"
+format: 
+  html: 
+    embed-resources: true
+---
+
+
+## TidyTuesday Section (optional)
+
+::: {.callout-important title="Instructions"}
+
+You can count work on this week's TidyTuesday toward the exceptional work required for an A in the Homework component.
+
+:::
+
+
+Explore the week's [TidyTuesday](https://github.com/rfordatascience/tidytuesday) challenge. Develop a research question, then answer it through a short data story with [effective visualization(s)]({{< var effective-viz-url >}}).  Provide sufficient background for readers to grasp your narrative.
+
+```{r, message = F}
+# Importing TidyTuesday data (code taken directly from the 'One Million Digits of Pi' github).
+pi_digits <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2026/2026-03-24/pi_digits.csv')
+
+# Loading 'tidyverse' package.
+library(tidyverse)
+```
+
+> **Research Questions:** How many instances do the digits of Pi divide its digit placement without having remainders?
+
+```{r, warning = F}
+# Visualization
+pi_digits |>
+  mutate(remainder = if_else(digit_position %% digit == 0, "No", "Yes")) |>
+  group_by(digit) |>
+  # counts the number of remainders/non-remainders without eliminating the other columns
+  add_count(remainder, name = "count") |> 
+  ggplot(aes(x = digit, y = count, fill = remainder)) +
+  scale_x_continuous(breaks = c(0:9), label = c(0:9)) +
+  geom_col(position = "dodge") +
+  labs(x = "Digit", 
+       y = "Number of Instances", 
+       fill = "Remainder?", 
+       title = "Pi: The Digit Positions / Digits",
+       subtitle = "Measuring the number of instances in which a remainder is present or not",
+       caption = "Isauro Reyes, TidyTuesday('2026-03-24')",
+       alt = "A bar chart displaying the digits of Pi and the number of times it has a remainder or not. Two different colored bars are used to denote this. The graph displays that the no remainders become less common with higher digit values, with the opposite occuring with the number of remainders. If a digit is 0, there is neither remainder/no remainders, since the quotient of any value and 0 is always Infinity. 1 always has no remainders. 2 is split.") +
+  scale_fill_viridis_d() +
+  theme_classic()
+```
+
+> **Data Story:** 
+  By definition, irrational numbers have an infinite number of digits that follow the decimal point. Pi is no different. As such, there is no telling what kind of relationship lies between the digits of Pi and what the position of those digits are, unless we take a sample of it. 
+  One relationship that is quite inriguing is how the digits of Pi divide the position they're in. Specifically, if the number of remainders changes with an increasing position. For example, the 1st digit of Pi is 3, 1/3 results in a remainder. The 18th digit of Pi is also 3, but 18/3 does not result in a remainder. This research question observes how this relationship is explored between the first million digits of Pi, which is taken from the Eve Andresson collection on the `TidyTuesday` github.
+  The bar chart above finds that the number of remainders decreases with higher digits of Pi. This is interesting, as an infinite number of digits suggests that there should be an infinite number of both remainders and non-remainders for each digit. However, taking the first million sample displays otherwise. This is interesting, since it implies that the non-remainder infinity is 'smaller' than the remainder infinity for higher digits; if the sample is indicative of the entire irrational Pi. 
