@@ -282,7 +282,7 @@ ORDER BY Score DESC
 
 **Exercise:** Pick two tags that interest you and you think will occur together and find the top voted posts that contain both.
 
-```{sql eval=FALSE}
+```{sql eval=FALSE} 
 SELECT TOP(100)
 Id, Title, Score, Body, Tags
 FROM Posts
