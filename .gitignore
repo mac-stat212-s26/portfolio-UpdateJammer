@@ -70,3 +70,6 @@ _freeze/
 *.log
 *.aux
 *.toc
+ica/14_ipa_2/code/census_api_key.txt
+ica/18_interactive_viz/data/raw/diverse_data_by_dist.rds
+ica/18_interactive_viz/data/raw/https:mac-stat.github.io:data:diverse_data_by_year.csv
