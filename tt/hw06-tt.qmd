@@ -34,15 +34,15 @@ pi_digits |>
   group_by(digit) |>
   # counts the number of remainders/non-remainders without eliminating the other columns
   add_count(remainder, name = "count") |> 
-  ggplot(aes(x = digit, y = count, fill = remainder)) +
+  ggplot(aes(x = digit, y = count/1000, fill = remainder)) +
   scale_x_continuous(breaks = c(0:9), label = c(0:9)) +
   geom_col(position = "dodge") +
   labs(x = "Digit", 
-       y = "Number of Instances", 
+       y = "Number of Instances (in thousands)", 
        fill = "Remainder?", 
-       title = "Pi: The Digit Positions / Digits",
-       subtitle = "Measuring the number of instances in which a remainder is present or not",
-       caption = "Isauro Reyes, TidyTuesday('2026-03-24')",
+       title = "The Digits of Pi: Placement Divided by the Digit",
+       subtitle = "any# divided by 1 never results in a remainder. Same with 0, any# divided by 0 is undefined.",
+       caption = "Isauro Reyes, Data Source: One Million Digits of Pi (Eve Andersson collection)",
        alt = "A bar chart displaying the digits of Pi and the number of times it has a remainder or not. Two different colored bars are used to denote this. The graph displays that the no remainders become less common with higher digit values, with the opposite occuring with the number of remainders. If a digit is 0, there is neither remainder/no remainders, since the quotient of any value and 0 is always Infinity. 1 always has no remainders. 2 is split.") +
   scale_fill_viridis_d() +
   theme_classic()
